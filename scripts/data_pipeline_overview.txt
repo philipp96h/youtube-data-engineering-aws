@@ -1,0 +1,45 @@
+# Data Pipeline Overview for YouTube Data Engineering Project
+
+## Pipeline Description:
+This pipeline processes YouTube data extracted from the YouTube API. It stores, transforms, and analyzes this data using AWS services like Glue, Athena, and QuickSight. The focus is on analyzing video and channel metrics such as views, likes, and comments, and visualizing these data to derive valuable insights.
+
+### Pipeline Steps:
+
+1. **Data Source**:
+   - Raw data is extracted from various sources. In this project, we use `youtube-database.cleansed-statistics` as the main source. This table contains data such as `video_id`, `channel_title`, `publish_time`, `tags`, `views`, `likes`, `dislikes`, `comment_count`, and `description`.
+   - Additional data is stored in the `video_data` and `channel_data` tables, containing details about individual videos and channels.
+
+2. **Data Preparation**:
+   - **AWS Glue** is used to transform and clean the data. In this step, erroneous, duplicate, or irrelevant records are removed. Missing values are also handled.
+   - The data is extracted and prepared for analysis, particularly through the calculation of key metrics such as `views`, `likes`, `comments`, and the categorization of videos.
+   - After transformation, the cleaned data is stored in **Amazon S3** and is available for querying in **Amazon Athena**.
+
+3. **Data Analysis with Athena**:
+   - **Amazon Athena** is used to run SQL queries on the transformed data. The following queries are part of the analysis:
+     - Count videos per channel.
+     - Calculate average views and likes per video.
+     - Query videos with more than one million views.
+     - Perform `JOIN` queries to merge video and channel information.
+   - Queries also include time interval calculations, such as filtering videos published in the last 30 days.
+
+4. **Visualization with QuickSight**:
+   - The results of Athena queries are passed to **Amazon QuickSight**, where interactive dashboards are created. These dashboards provide visualizations for:
+     - The most viewed videos.
+     - The most popular channels.
+     - Video categorizations.
+   - QuickSight enables detailed analysis of trends, such as the development of views and engagement over time.
+
+5. **Pipeline Orchestration**:
+   - The entire pipeline is orchestrated using **AWS Step Functions** to coordinate the different data processing and analysis steps. This ensures that all steps are executed in the correct order and at the right time.
+
+6. **Error Handling**:
+   - Errors that occur during pipeline execution are automatically logged in **AWS CloudWatch Logs**.
+   - Faulty records or execution failures are automatically handled by either moving them to a separate error file or notifying the team.
+
+### Key Tools and Technologies:
+- **AWS Glue**: Used for data transformation and cleaning.
+- **Amazon Athena**: Executes SQL queries on the transformed data.
+- **Amazon QuickSight**: Visualizes the analysis results in interactive dashboards.
+- **AWS S3**: Stores raw and transformed datasets.
+- **AWS Step Functions**: Orchestrates the entire pipeline.
+- **AWS CloudWatch**: Monitors and logs errors.
